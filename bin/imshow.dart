@@ -6,7 +6,7 @@ void main() async {
     while (true) {
       if (!camera.read()) { throw Exception("Camera read failed"); }
       camera.display();
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(Duration(milliseconds: (1000/60).round()));
     }
   } finally {
     camera.dispose();    

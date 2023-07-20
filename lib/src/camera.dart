@@ -5,7 +5,7 @@ import "package:ffi/ffi.dart";
 
 import "generated/opencv_ffi_bindings.dart";
 
-const path = "build/opencv_ffi.dll";
+const path = "opencv_ffi.dll";
 final native = OpenCVBindings(DynamicLibrary.open(path));
 
 class Camera implements Finalizable {
