@@ -1,0 +1,3 @@
+[submodule "src/opencv"]
+	path = src/opencv
+	url = https://github.com/opencv/opencv
