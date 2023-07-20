@@ -1,0 +1,71 @@
+name: Documentation
+
+# Documents the Dart code within this project with the `dartdoc` tool.
+# Publishes the result to a separate branch, `documentation`, under the `docs` folder. 
+# Set GitHub pages to publish that target to get an online documentation site. 
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./repo
+    steps:
+      - name: Cache Flutter
+        id: cache-flutter
+        uses: actions/cache@v2
+        with:
+          path: flutter/
+          key: ${{ runner.os }}-flutter
+
+      - name: Install Flutter
+        if: steps.cache-flutter.outputs.cache-hit != 'true'
+        uses: britannio/action-install-flutter@v1.0
+
+      - uses: actions/checkout@v2
+        with: 
+          fetch-depth: 0
+          path: repo  # keep Flutter separate
+          submodules: recursive
+
+      - name: Git Setup
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git branch --all
+          git switch --track origin/documentation
+          git reset --hard origin/main
+
+      - name: Add Flutter to path
+        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+
+      - name: Flutter Setup 
+        run: |
+          flutter packages get
+          flutter pub global activate dartdoc
+          flutter pub global run dartdoc --version
+          flutter --version
+
+      - name: Analyze code
+        run: |
+          flutter analyze --dartdocs
+
+      - name: Output error
+        if: failure()
+        run: echo "::error The code or is missing documentation. Run flutter analyze --dartdocs"
+
+      - name: Generate documentation
+        run: dart pub global run dartdoc --exclude 'dart:async,dart:collection,dart:convert,dart:core,dart:developer,dart:io,dart:isolate,dart:math,dart:typed_data,dart:ui,dart:html,dart:js,dart:ffi,dart:js_util' --quiet --output docs --no-validate-links --no-verbose-warnings --no-allow-non-local-warnings --json
+
+      - name: Commit and push files
+        run: |
+          cd docs
+          cd ..
+          git status
+          git stage --force docs
+          git commit -a -m "Generated documentation"
+          git push --force

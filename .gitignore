@@ -1,6 +1,7 @@
 # OpenCV build artifacts
 /build
 /dist
+*.dll
 
 # https://dart.dev/guides/libraries/private-files
 # Created by `dart pub`

@@ -1,81 +1,87 @@
 import "dart:io";
 import "dart:ffi";
-import "dart:typed_data";
 import "package:ffi/ffi.dart";
 
-import "generated/opencv_ffi_bindings.dart";
+import "exceptions.dart";
+import "ffi.dart";
+import "image.dart";
 
-const path = "opencv_ffi.dll";
-final native = OpenCVBindings(DynamicLibrary.open(path));
+/// Opens and accesses a camera attached to your device.
+/// 
+/// Check if the camera is available using [isOpened], then: 
+/// - Show the current frame on-screen using [showFrame]
+/// - Get a JPG using [getJpg]
+/// - Save a JPG to a file using [saveJpg]
+/// 
+/// Be sure to call [dispose] to release the camera.
+class Camera {
+	/// An arena to allocate native memory. Call `_arena<T>()` to do so.
+	final _arena = Arena();
 
-class Camera implements Finalizable {
-	final int index;
-	final arena = Arena();
-	late final Pointer<VideoCapture> camera;
-	late final Pointer<Mat> image;
+	/// A pointer to the native [VideoCapture] object. Can only be used by OpenCV.
+	final Pointer<VideoCapture> _camera;
 
-	Pointer<Uint8>? _oldFrame;
+	/// A pointer to the current frame. Can only be used by OpenCV.
+	final Pointer<Mat> _image = nativeLib.Mat_create();
 
-	Camera(this.index)
-	{
-		native.setLogLevel(0);  // 0 = silent
-		camera = native.VideoCapture_getByIndex(index);
-		image = native.Mat_create();
+	/// Opens the camera at the given [index].
+	Camera(int index) : _camera = nativeLib.VideoCapture_getByIndex(index);
+
+	/// Reads the current frame, throwing a [CameraReadException] if it fails.
+	void _read() {
+		final result = nativeLib.VideoCapture_read(_camera, _image);
+		if (result == 0) throw CameraReadException();
 	}
 
+	/// Frees the native resources used by this camera.
 	void dispose() {
-		native
-			..VideoCapture_release(camera)
-			..VideoCapture_destroy(camera)
-			..Mat_destroy(image);
-		arena.releaseAll();
-		if (_oldFrame != null) calloc.free(_oldFrame!);
+		nativeLib
+			..VideoCapture_release(_camera)
+			..VideoCapture_destroy(_camera)
+			..Mat_destroy(_image);
+		_arena.releaseAll();
 	}
 
-	bool get isOpened => native.VideoCapture_isOpened(camera) != 0;
+	/// Whether this camera is opened. If the device is not connected, this will be false.
+	bool get isOpened => nativeLib.VideoCapture_isOpened(_camera) != 0;
 
-	bool read() => native.VideoCapture_read(camera, image) != 0;
+	/// Reads a frame from the camera and shows it to the screen.
+	/// 
+	/// The resulting window is controlled by OpenCV, so only use this for testing.
+	void showFrame() {
+		_read();
+		nativeLib.imshow(_image);
+	}
 
-	void display() => native.imshow(image);
-
-	OpenCVImage? getJpg({int quality = 75}) {
-		if (!read()) return null;
-		// The native function returns a variable-length buffer. 
-		// To ensure enough space is allocated, we do the allocation on the native side.
-		// This means that the native code cannot just populate a pre-allocated buffer,
-		// but rather has to return a pointer to the buffer. Since we're already returning
-		// the length, we use an out-variable for the buffer's pointer.
+	/// Returns an [OpenCVImage] representing a JPG frame captured at the given [quality].
+	OpenCVImage getJpg({int quality = 75}) {
+		// The native function needs to return a variable-length buffer. If we allocate the buffer on
+		// the Dart side, before reading the image, it may end up being too small. So we need to wait
+		// until after the image has been read, on the native side, to allocate an appropriate buffer.
 		// 
-		// 1. Allocate enough space for a pointer, initialized to the nullptr
-		// 2. Call the native function with the address of the pointer
-		// 3. Lookup the new pointer at the same address
-		// 4. Use that pointer to retrieve the native buffer.
-		final Pointer<Pointer<Uint8>> bufferAddress = arena<Pointer<Uint8>>();  // (1)
-		final size = native.encodeJpg(image, quality, bufferAddress);  // (2)
-		if (size == 0) return null;
+		// Our workaround is to pass a pointer to a pointer to a buffer, instead of just the pointer
+		// itself. In other words, a `uint8_t**`. This way, the native function can set the pointer
+		// to point to a buffer _it_ allocates after reading the image, and we can read the address.
+		// The only caveat is that since the buffer is allocated natively, we must keep a pointer 
+		// to it so we can free it natively too, not from Dart.
+		// 
+		// 1. Allocate a pointer to a pointer.
+		// 2. Call the native function and pass the pointer to the pointer.
+		// 3. The pointer now points to a valid pointer, which points to the actual buffer.
+		_read();
+		final Pointer<Pointer<Uint8>> bufferAddress = _arena<Pointer<Uint8>>();  // (1)
+		final size = nativeLib.encodeJpg(_image, quality, bufferAddress);  // (2)
+		if (size == 0) throw ImageEncodeException();
 		final Pointer<Uint8> buffer = bufferAddress.value;  // (3)
 		return OpenCVImage(pointer: buffer, length: size);
 	}
 
-	Future<bool> saveScreenshot(File file, {int quality = 75}) async {
-		final OpenCVImage? jpg = getJpg(quality: quality);
-		if (jpg == null) return false;
+	/// Saves the current frame as a JPG to the given [file]. 
+	/// 
+	/// This function allocates and disposes of an [OpenCVImage] for you.
+	Future<void> saveJpg(File file, {int quality = 75}) async {
+		final OpenCVImage jpg = getJpg(quality: quality);
 		await file.writeAsBytes(jpg.data, flush: true);
 		jpg.dispose();
-		return true;
-	}
-}
-
-// To avoid copying data, we use a [Uint8List] that's backed by the native buffer.
-// This means we cannot free it so long as the image is being used. So here we 
-// hold onto the old frame and free it when we have a new frame.
-class OpenCVImage {
-	final Pointer<Uint8> pointer;
-	final Uint8List data;
-	final int length;
-	OpenCVImage({required this.pointer, required this.length}) : data = pointer.asTypedList(length);
-
-	void dispose() {
-		native.freeImage(pointer);
 	}
 }

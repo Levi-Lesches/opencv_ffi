@@ -1,0 +1,44 @@
+name: Analyzer
+
+# Analyzes the project on every pull request. 
+# See analysis_options.yaml for lint configuration.
+
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches: [ main ]
+
+jobs: 
+  analyze: 
+    runs-on: ubuntu-latest
+    defaults: 
+      run: 
+        working-directory: ./repo
+
+    steps: 
+      - name: Cache Flutter
+        id: cache-flutter
+        uses: actions/cache@v2
+        with: 
+          path: flutter/
+          key: ${{ runner.os }}-flutter
+
+      - name: Install Flutter
+        if: steps.cache-flutter.outputs.cache-hit != 'true'
+        uses: britannio/action-install-flutter@v1.0
+
+      - uses: actions/checkout@v2
+        with: 
+          path: repo  # keeps Flutter separate from repo
+          submodules: recursive
+
+      # Has to be after checkout since repo won't exist
+      - name: Add Flutter to path
+        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+
+      - name: Analyze
+        run: flutter analyze --dartdocs
+        
+      # - name: Run tests
+      #   run: dart test
