@@ -30,7 +30,7 @@ jobs:
         with: 
           fetch-depth: 0
           path: repo  # keep Flutter separate
-          submodules: recursive
+          # submodules: recursive
 
       - name: Git Setup
         run: |
