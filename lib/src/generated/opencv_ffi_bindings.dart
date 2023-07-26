@@ -6,7 +6,7 @@ import 'dart:ffi' as ffi;
 
 /// Bindings for `src/opencv_ffi.h`.
 ///
-/// Regenerate bindings with `dart pub run ffigen --config ffigen.yaml`.
+/// Regenerate bindings with `dart run ffigen --config ffigen.yaml -v severe`.
 ///
 class OpenCVBindings {
   /// Holds the symbol lookup function.
@@ -37,6 +37,21 @@ class OpenCVBindings {
           'VideoCapture_getByIndex');
   late final _VideoCapture_getByIndex = _VideoCapture_getByIndexPtr.asFunction<
       ffi.Pointer<VideoCapture> Function(int)>();
+
+  ffi.Pointer<VideoCapture> VideoCapture_getByName(
+    ffi.Pointer<ffi.Char> name,
+  ) {
+    return _VideoCapture_getByName(
+      name,
+    );
+  }
+
+  late final _VideoCapture_getByNamePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<VideoCapture> Function(
+              ffi.Pointer<ffi.Char>)>>('VideoCapture_getByName');
+  late final _VideoCapture_getByName = _VideoCapture_getByNamePtr.asFunction<
+      ffi.Pointer<VideoCapture> Function(ffi.Pointer<ffi.Char>)>();
 
   void VideoCapture_destroy(
     ffi.Pointer<VideoCapture> capture,

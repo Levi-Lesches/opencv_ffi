@@ -20,6 +20,7 @@ extern "C" {
 
 // VideoCapture code
 FFI_PLUGIN_EXPORT VideoCapture* VideoCapture_getByIndex(int index);
+FFI_PLUGIN_EXPORT VideoCapture* VideoCapture_getByName(char* name);
 FFI_PLUGIN_EXPORT void VideoCapture_destroy(VideoCapture* capture);
 FFI_PLUGIN_EXPORT void VideoCapture_release(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_isOpened(VideoCapture* capture);
