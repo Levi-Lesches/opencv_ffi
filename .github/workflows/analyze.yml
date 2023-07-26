@@ -1,44 +1,30 @@
-name: Analyzer
-
-# Analyzes the project on every pull request. 
-# See analysis_options.yaml for lint configuration.
+name: Dart Analyzer
 
 on:
-  pull_request:
-  merge_group:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
 
-jobs: 
-  analyze: 
+jobs:
+  analyze:
     runs-on: ubuntu-latest
-    defaults: 
-      run: 
-        working-directory: ./repo
 
-    steps: 
-      - name: Cache Flutter
-        id: cache-flutter
-        uses: actions/cache@v2
-        with: 
-          path: flutter/
-          key: ${{ runner.os }}-flutter
+    steps:
+      - uses: actions/checkout@v3
 
-      - name: Install Flutter
-        if: steps.cache-flutter.outputs.cache-hit != 'true'
-        uses: britannio/action-install-flutter@v1.0
+      # Note: This workflow uses the latest stable version of the Dart SDK.
+      # You can specify other versions if desired, see documentation here:
+      # https://github.com/dart-lang/setup-dart/blob/main/README.md
+      - uses: dart-lang/setup-dart@v1
 
-      - uses: actions/checkout@v2
-        with: 
-          path: repo  # keeps Flutter separate from repo
-          # submodules: recursive
-
-      # Has to be after checkout since repo won't exist
-      - name: Add Flutter to path
-        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-
-      - name: Analyze
-        run: flutter analyze --dartdocs
+      - name: Install dependencies
+        run: dart pub get
         
+      - name: Analyze project source
+        run: dart analyze --fatal-infos
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
       # - name: Run tests
-      #   run: dart test
+      #  run: dart test
