@@ -33,7 +33,7 @@ class Camera {
 	/// Opens the camera with the given [name].
 	/// 
 	/// This name is the path to a device file, such as `/dev/video0`. This is not supported on Windows.
-	Camera.fromName(String name) : _camera = nativeLib.VideoCapture_getByName(name.toNativeUtf8().cast<Char>());
+	Camera.fromName(String name) : _camera = nativeLib.VideoCapture_getByName(name.toNativeUtf8());
 
 	/// Reads the current frame, and returns true if successful.
 	/// 
