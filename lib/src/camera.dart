@@ -25,7 +25,12 @@ class Camera {
 	final Pointer<Mat> _image = nativeLib.Mat_create();
 
 	/// Opens the camera at the given [index].
-	Camera(int index) : _camera = nativeLib.VideoCapture_getByIndex(index);
+	Camera.fromIndex(int index) : _camera = nativeLib.VideoCapture_getByIndex(index);
+
+	/// Opens the camera with the given [name].
+	/// 
+	/// This name is the path to a device file, such as `/dev/video0`. This is not supported on Windows.
+	Camera.fromName(String name) : _camera = nativeLib.VideoCapture_getByName(name.toNativeUtf8().cast<Char>());
 
 	/// Reads the current frame, throwing a [CameraReadException] if it fails.
 	void _read() {

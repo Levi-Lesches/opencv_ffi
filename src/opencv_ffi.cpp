@@ -9,6 +9,11 @@ FFI_PLUGIN_EXPORT VideoCapture* VideoCapture_getByIndex(int index) {
 	return reinterpret_cast<VideoCapture*>(new cv::VideoCapture(index, 0));
 }
 
+FFI_PLUGIN_EXPORT VideoCapture* VideoCapture_getByName(char* name) {
+	std::string filename = name;
+	return reinterpret_cast<VideoCapture*>(new cv::VideoCapture(filename, 0));
+}
+
 FFI_PLUGIN_EXPORT void VideoCapture_destroy(VideoCapture* capture) {
 	delete reinterpret_cast<cv::VideoCapture*>(capture);
 }
