@@ -25,6 +25,7 @@ FFI_PLUGIN_EXPORT void VideoCapture_destroy(VideoCapture* capture);
 FFI_PLUGIN_EXPORT void VideoCapture_release(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_isOpened(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image);
+FFI_PLUGIN_EXPORT void VideoCapture_setResolution(VideoCapture* capture, int width, int height);
 
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();

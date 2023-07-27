@@ -28,17 +28,19 @@ class Camera {
 	final Pointer<Mat> _image = nativeLib.Mat_create();
 
 	/// Opens the camera at the given [index].
-	Camera.fromIndex(int index) : _camera = nativeLib.VideoCapture_getByIndex(index);
+	Camera.fromIndex(int index) : 
+		_camera = nativeLib.VideoCapture_getByIndex(index);
 
 	/// Opens the camera with the given [name].
 	/// 
 	/// This name is the path to a device file, such as `/dev/video0`. This is not supported on Windows.
-	Camera.fromName(String name) : _camera = nativeLib.VideoCapture_getByName(name.toNativeUtf8());
+	Camera.fromName(String name) : 
+		_camera = nativeLib.VideoCapture_getByName(name.toNativeUtf8());
 
 	/// Reads the current frame, and returns true if successful.
 	/// 
-	/// This function updates [_image]. If it is not called, other functions such as [showFrame] or [getJpg]
-	/// will use the last read frame, or a blank frame.
+	/// This function updates [_image]. If it is not called, other functions such as [showFrame]
+	/// or [getJpg] will use the last read frame, or a blank frame.
 	bool _read() {
 		final result = nativeLib.VideoCapture_read(_camera, _image);
 		return result != 0;
@@ -55,6 +57,10 @@ class Camera {
 
 	/// Whether this camera is opened. If the device is not connected, this will be false.
 	bool get isOpened => nativeLib.VideoCapture_isOpened(_camera) != 0;
+
+	/// Sets the resolution of the camera.
+	void setResolution(int width, int height) => 
+		nativeLib.VideoCapture_setResolution(_camera, width, height);
 
 	/// Reads a frame from the camera and shows it to the screen.
 	/// 

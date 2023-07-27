@@ -113,6 +113,25 @@ class OpenCVBindings {
   late final _VideoCapture_read = _VideoCapture_readPtr.asFunction<
       int Function(ffi.Pointer<VideoCapture>, ffi.Pointer<Mat>)>();
 
+  void VideoCapture_setResolution(
+    ffi.Pointer<VideoCapture> capture,
+    int width,
+    int height,
+  ) {
+    return _VideoCapture_setResolution(
+      capture,
+      width,
+      height,
+    );
+  }
+
+  late final _VideoCapture_setResolutionPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<VideoCapture>, ffi.Int,
+              ffi.Int)>>('VideoCapture_setResolution');
+  late final _VideoCapture_setResolution = _VideoCapture_setResolutionPtr
+      .asFunction<void Function(ffi.Pointer<VideoCapture>, int, int)>();
+
   /// Matrix code
   ffi.Pointer<Mat> Mat_create() {
     return _Mat_create();

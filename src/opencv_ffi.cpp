@@ -31,6 +31,12 @@ FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image) {
 	return reinterpret_cast<cv::VideoCapture*>(capture)->read(*cvImage);
 }
 
+FFI_PLUGIN_EXPORT void VideoCapture_setResolution(VideoCapture* capture, int width, int height) {
+	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
+	pointer->set(cv::CAP_PROP_FRAME_WIDTH, width);
+	pointer->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+}
+
 FFI_PLUGIN_EXPORT Mat* Mat_create() {
 	return reinterpret_cast<Mat*>(new cv::Mat());
 }
