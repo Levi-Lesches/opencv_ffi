@@ -57,7 +57,7 @@ FFI_PLUGIN_EXPORT int encodeJpg(Mat* image, int quality, uint8_t** pointer) {
 	std::vector<int> compression_params;
 	compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
 	compression_params.push_back(quality);
-	bool success = cv::imencode(".jpg", *cvImage, vec);
+	bool success = cv::imencode(".jpg", *cvImage, vec, compression_params);
 	if (!success) return 0;
 
 	// If this worked, work save the [vec] to a buffer at [pointer].
