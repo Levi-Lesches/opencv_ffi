@@ -1,6 +1,7 @@
 name: opencv_ffi
-description: A starting point for Dart libraries or applications.
+description: An FFI implementation of OpenCV for Dart
 version: 1.0.0
+repository: https://github.com/BinghamtonRover/OpenCV-FFI
 
 environment:
   sdk: ^3.0.0
@@ -13,3 +14,10 @@ dev_dependencies:
   ffigen: ^9.0.0
   test: ^1.21.0
   very_good_analysis: ^5.0.0+1
+
+topics: 
+  - ffi
+  - opencv
+  - video
+  - image
+  - camera
