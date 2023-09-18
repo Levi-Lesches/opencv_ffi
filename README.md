@@ -26,4 +26,4 @@ void main() async {
 }
 ```
 
-See the [docs](https://binghamtonrover.github.io/OpenCV-FFI/opencv_ffi/opencv_ffi-library.html) for more usage.
+See the [docs](https://levi-lesches.github.io/OpenCV-FFI/opencv_ffi/opencv_ffi-library.html) for more usage.
