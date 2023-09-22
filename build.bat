@@ -27,4 +27,7 @@ if not exist dist mkdir dist
 copy build\bin\Debug\*.dll dist
 copy build\Debug\*.dll dist
 
-echo Done! Your files are in the dist folder. Copy those to your Dart project.
+echo:
+echo Done! Your files are in the dist folder. Add this directory to your PATH:
+echo %cd%\dist
+echo You can edit your PATH by entering ^"Edit the system environment variables^" in the Start Menu
