@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e  # Any error will cause the script to fail
+
+git submodule update --init --recursive
 
 # Warn if CMake is not installed
 CMAKE_PATH=`which cmake`
