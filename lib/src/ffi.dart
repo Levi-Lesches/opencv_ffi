@@ -1,5 +1,6 @@
-import "dart:io";
 import "dart:ffi";
+import "dart:io";
+
 import "generated/opencv_ffi_bindings.dart";
 
 export "generated/opencv_ffi_bindings.dart";
@@ -11,7 +12,7 @@ String _getPath() {
   } else if (Platform.isMacOS) {
     return "opencv_ffi.dylib";
   } else if (Platform.isLinux) {
-    return "libopencv_ffi.so";
+    return "dist/libopencv_ffi.so";
   } else {
     throw UnsupportedError("Unsupported platform");
   }
