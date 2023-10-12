@@ -13,13 +13,13 @@ void main() async {
 
       switch(i){
         case 0: 
-          print("Check your device name");
+          // print("Check your device name");
         case 1:
         case 2:
-          print("Camera disconnected, restarting");
+          // print("Camera disconnected, restarting");
           runtime(camera);
         case 3:
-          print("Camera disconnected 3 times, exiting");
+          // print("Camera disconnected 3 times, exiting");
       }
 
     } finally {
@@ -33,4 +33,3 @@ void runtime(Camera camera){
     camera.showFrame();
   }
 }
-
