@@ -113,109 +113,41 @@ class OpenCVBindings {
   late final _VideoCapture_read = _VideoCapture_readPtr.asFunction<
       int Function(ffi.Pointer<VideoCapture>, ffi.Pointer<Mat>)>();
 
-  void VideoCapture_setResolution(
+  void VideoCapture_setProperty(
     ffi.Pointer<VideoCapture> capture,
-    int width,
-    int height,
+    int propertyID,
+    int value,
   ) {
-    return _VideoCapture_setResolution(
+    return _VideoCapture_setProperty(
       capture,
-      width,
-      height,
+      propertyID,
+      value,
     );
   }
 
-  late final _VideoCapture_setResolutionPtr = _lookup<
+  late final _VideoCapture_setPropertyPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(ffi.Pointer<VideoCapture>, ffi.Int,
-              ffi.Int)>>('VideoCapture_setResolution');
-  late final _VideoCapture_setResolution = _VideoCapture_setResolutionPtr
+              ffi.Int)>>('VideoCapture_setProperty');
+  late final _VideoCapture_setProperty = _VideoCapture_setPropertyPtr
       .asFunction<void Function(ffi.Pointer<VideoCapture>, int, int)>();
 
-  void VideoCapture_zoom(
+  int VideoCapture_getProperty(
     ffi.Pointer<VideoCapture> capture,
-    int zoomLevel,
+    int propertyID,
   ) {
-    return _VideoCapture_zoom(
+    return _VideoCapture_getProperty(
       capture,
-      zoomLevel,
+      propertyID,
     );
   }
 
-  late final _VideoCapture_zoomPtr = _lookup<
+  late final _VideoCapture_getPropertyPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_zoom');
-  late final _VideoCapture_zoom = _VideoCapture_zoomPtr.asFunction<
-      void Function(ffi.Pointer<VideoCapture>, int)>();
-
-  void VideoCapture_pan(
-    ffi.Pointer<VideoCapture> capture,
-    int panLevel,
-  ) {
-    return _VideoCapture_pan(
-      capture,
-      panLevel,
-    );
-  }
-
-  late final _VideoCapture_panPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_pan');
-  late final _VideoCapture_pan = _VideoCapture_panPtr.asFunction<
-      void Function(ffi.Pointer<VideoCapture>, int)>();
-
-  void VideoCapture_tilt(
-    ffi.Pointer<VideoCapture> capture,
-    int tiltLevel,
-  ) {
-    return _VideoCapture_tilt(
-      capture,
-      tiltLevel,
-    );
-  }
-
-  late final _VideoCapture_tiltPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_tilt');
-  late final _VideoCapture_tilt = _VideoCapture_tiltPtr.asFunction<
-      void Function(ffi.Pointer<VideoCapture>, int)>();
-
-  void VideoCapture_focus(
-    ffi.Pointer<VideoCapture> capture,
-    int focusLevel,
-  ) {
-    return _VideoCapture_focus(
-      capture,
-      focusLevel,
-    );
-  }
-
-  late final _VideoCapture_focusPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_focus');
-  late final _VideoCapture_focus = _VideoCapture_focusPtr.asFunction<
-      void Function(ffi.Pointer<VideoCapture>, int)>();
-
-  void VideoCapture_toggleAutofocus(
-    ffi.Pointer<VideoCapture> capture,
-    int autofocusToggle,
-  ) {
-    return _VideoCapture_toggleAutofocus(
-      capture,
-      autofocusToggle,
-    );
-  }
-
-  late final _VideoCapture_toggleAutofocusPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<VideoCapture>,
-              ffi.Int)>>('VideoCapture_toggleAutofocus');
-  late final _VideoCapture_toggleAutofocus = _VideoCapture_toggleAutofocusPtr
-      .asFunction<void Function(ffi.Pointer<VideoCapture>, int)>();
+          ffi.Int Function(
+              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_getProperty');
+  late final _VideoCapture_getProperty = _VideoCapture_getPropertyPtr
+      .asFunction<int Function(ffi.Pointer<VideoCapture>, int)>();
 
   /// Matrix code
   ffi.Pointer<Mat> Mat_create() {

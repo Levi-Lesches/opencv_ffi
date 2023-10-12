@@ -31,60 +31,14 @@ FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image) {
 	return reinterpret_cast<cv::VideoCapture*>(capture)->read(*cvImage);
 }
 
-FFI_PLUGIN_EXPORT void VideoCapture_setResolution(VideoCapture* capture, int width, int height) {
+FFI_PLUGIN_EXPORT void VideoCapture_setProperty(VideoCapture* capture, int propertyID, int value) {
 	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-	pointer->set(cv::CAP_PROP_FRAME_WIDTH, width);
-	pointer->set(cv::CAP_PROP_FRAME_HEIGHT, height);
-}
-// The specific values for each camera control may be different for different cameras
-
-// For Camera controls: 
-// On Linux 
-// To see minimum and maximum values of each setting use
-// $ v4l2-ctl -d 0 -l
-
-// On Windows 
-// Use AMCap and check camera properties or use FFMPEG 
-// For FFMPEG I recommend using Chocolatey
-
-// $ ffmpeg -list_devices true f dshow -i dummy
-// ffmpeg -f dshow -list_options true -i video="Your video device"
-// *make sure there are no spaces between video="Your video device"
-
-/* Zoom:
-*/ 
-
-FFI_PLUGIN_EXPORT void VideoCapture_zoom(VideoCapture* capture, int zoomLevel) {
-    cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-    pointer->set(cv::CAP_PROP_ZOOM, zoomLevel);
+	pointer->set(propertyID, value);
 }
 
-/* Pan:
-*/ 
-FFI_PLUGIN_EXPORT void VideoCapture_pan(VideoCapture* capture, int panLevel) {
-    cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-    pointer->set(cv::CAP_PROP_PAN, panLevel); 
-}
-
-/* Tilt:
-*/ 
-FFI_PLUGIN_EXPORT void VideoCapture_tilt(VideoCapture* capture, int tiltLevel) {
-    cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-    pointer->set(cv::CAP_PROP_ZOOM, tiltLevel);
-}
-
-/* Focus:
-*/ 
-FFI_PLUGIN_EXPORT void VideoCapture_focus(VideoCapture* capture, int focusLevel) {
-    cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-    pointer->set(cv::CAP_PROP_FOCUS, focusLevel);
-}
-
-/* Autofocus:	
-*/
-FFI_PLUGIN_EXPORT void VideoCapture_toggleAutofocus(VideoCapture* capture, int autofocusToggle) {
-    cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-    pointer->set(cv::CAP_PROP_AUTOFOCUS, autofocusToggle);
+FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int propertyID) {
+	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
+	return pointer->get(propertyID);
 }
 
 FFI_PLUGIN_EXPORT Mat* Mat_create() {
