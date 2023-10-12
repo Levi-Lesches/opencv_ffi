@@ -31,10 +31,14 @@ FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image) {
 	return reinterpret_cast<cv::VideoCapture*>(capture)->read(*cvImage);
 }
 
-FFI_PLUGIN_EXPORT void VideoCapture_setResolution(VideoCapture* capture, int width, int height) {
+FFI_PLUGIN_EXPORT void VideoCapture_setProperty(VideoCapture* capture, int propertyID, int value) {
 	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
-	pointer->set(cv::CAP_PROP_FRAME_WIDTH, width);
-	pointer->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+	pointer->set(propertyID, value);
+}
+
+FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int propertyID) {
+	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
+	return pointer->get(propertyID);
 }
 
 FFI_PLUGIN_EXPORT Mat* Mat_create() {

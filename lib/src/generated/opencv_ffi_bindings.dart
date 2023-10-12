@@ -113,24 +113,41 @@ class OpenCVBindings {
   late final _VideoCapture_read = _VideoCapture_readPtr.asFunction<
       int Function(ffi.Pointer<VideoCapture>, ffi.Pointer<Mat>)>();
 
-  void VideoCapture_setResolution(
+  void VideoCapture_setProperty(
     ffi.Pointer<VideoCapture> capture,
-    int width,
-    int height,
+    int propertyID,
+    int value,
   ) {
-    return _VideoCapture_setResolution(
+    return _VideoCapture_setProperty(
       capture,
-      width,
-      height,
+      propertyID,
+      value,
     );
   }
 
-  late final _VideoCapture_setResolutionPtr = _lookup<
+  late final _VideoCapture_setPropertyPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(ffi.Pointer<VideoCapture>, ffi.Int,
-              ffi.Int)>>('VideoCapture_setResolution');
-  late final _VideoCapture_setResolution = _VideoCapture_setResolutionPtr
+              ffi.Int)>>('VideoCapture_setProperty');
+  late final _VideoCapture_setProperty = _VideoCapture_setPropertyPtr
       .asFunction<void Function(ffi.Pointer<VideoCapture>, int, int)>();
+
+  int VideoCapture_getProperty(
+    ffi.Pointer<VideoCapture> capture,
+    int propertyID,
+  ) {
+    return _VideoCapture_getProperty(
+      capture,
+      propertyID,
+    );
+  }
+
+  late final _VideoCapture_getPropertyPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_getProperty');
+  late final _VideoCapture_getProperty = _VideoCapture_getPropertyPtr
+      .asFunction<int Function(ffi.Pointer<VideoCapture>, int)>();
 
   /// Matrix code
   ffi.Pointer<Mat> Mat_create() {

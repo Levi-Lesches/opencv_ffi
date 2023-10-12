@@ -15,8 +15,17 @@ import "image.dart";
 /// Check if the camera is available using [isOpened], then:
 /// - Show the current frame on-screen using [showFrame]
 /// - Get a JPG using [getJpg]
-///
-/// Be sure to call [dispose] to release the camera.
+/// - Be sure to call [dispose] to release the camera.
+/// 
+/// This class also lets you set value for specific settings that may or may not be supported by
+/// your device. To find which values are supported, run the following command (Linux only):
+/// ```bash
+/// v4l2-ctl -d 0 -l
+/// ```
+/// 
+/// On Windows, you can use FFMPEG to check the camera's supported options. This class supports
+/// resolution, zoom, focus, autofocus, pan, tilt, and roll. Additional options can be set using
+/// [setProperty] and [getProperty].
 class Camera {
   /// An arena to allocate native memory. Call `_arena<T>()` to do so.
   final _arena = Arena();
@@ -58,10 +67,47 @@ class Camera {
   /// Whether this camera is opened. If the device is not connected, this will be false.
   bool get isOpened => nativeLib.VideoCapture_isOpened(_camera) != 0;
 
-  /// Sets the resolution of the camera.
-  void setResolution(int width, int height) =>
-      nativeLib.VideoCapture_setResolution(_camera, width, height);
+  /// Sets a property of the camera. 
+  /// 
+  /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
+  void setProperty(int propertyID, int value) => 
+    nativeLib.VideoCapture_setProperty(_camera, propertyID, value);
+  
+  /// Reads a property of the camera. 
+  /// 
+  /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
+  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID);
 
+  /// Sets the resolution of the camera.
+  void setResolution(int width, int height) {
+    setProperty(3, width);  // cv::CAP_PROP_FRAME_WIDTH = 3,
+    setProperty(4, height); // cv::CAP_PROP_FRAME_HEIGHT = 4,
+  }
+
+  /// The native framerate of the camera. This is different than reading frames at an interval.
+  int get fps => getProperty(5);
+  set fps(int value) => setProperty(5, value);
+  
+  /// The zoom level of the camera. 
+  int get zoom => getProperty(27);
+  set zoom(int value) => setProperty(27, value);
+  
+  /// The focus of the camera.
+  int get focus => getProperty(28);
+  set focus(int value) => setProperty(28, value);
+
+  /// Pans the camera when zoomed in.
+  int get pan => getProperty(33);
+  set pan(int value) => setProperty(33, value);
+  
+  /// Tilts the camera vertically when zoomed in.
+  int get tilt => getProperty(34);
+  set tilt(int value) => setProperty(34, value);
+
+  /// Rolls the camera when zoomed in.
+  int get roll => getProperty(35);
+  set roll(int value) => setProperty(35, value);
+  
   /// Reads a frame from the camera and shows it to the screen.
   ///
   /// The resulting window is controlled by OpenCV, so only use this for testing.
