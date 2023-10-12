@@ -1,5 +1,4 @@
 import "dart:ffi";
-// import "dart:html";
 import "package:ffi/ffi.dart";
 
 import "exceptions.dart";
@@ -16,8 +15,17 @@ import "image.dart";
 /// Check if the camera is available using [isOpened], then:
 /// - Show the current frame on-screen using [showFrame]
 /// - Get a JPG using [getJpg]
-///
-/// Be sure to call [dispose] to release the camera.
+/// - Be sure to call [dispose] to release the camera.
+/// 
+/// This class also lets you set value for specific settings that may or may not be supported by
+/// your device. To find which values are supported, run the following command (Linux only):
+/// ```bash
+/// v4l2-ctl -d 0 -l
+/// ```
+/// 
+/// On Windows, you can use FFMPEG to check the camera's supported options. This class supports
+/// resolution, zoom, focus, autofocus, pan, tilt, and roll. Additional options can be set using
+/// [setProperty] and [getProperty].
 class Camera {
   /// An arena to allocate native memory. Call `_arena<T>()` to do so.
   final _arena = Arena();
