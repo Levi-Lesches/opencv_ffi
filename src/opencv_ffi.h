@@ -26,6 +26,11 @@ FFI_PLUGIN_EXPORT void VideoCapture_release(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_isOpened(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image);
 FFI_PLUGIN_EXPORT void VideoCapture_setResolution(VideoCapture* capture, int width, int height);
+FFI_PLUGIN_EXPORT void VideoCapture_zoom(VideoCapture* capture, int zoomLevel);
+FFI_PLUGIN_EXPORT void VideoCapture_pan(VideoCapture* capture, int panLevel);
+FFI_PLUGIN_EXPORT void VideoCapture_tilt(VideoCapture* capture, int tiltLevel);
+FFI_PLUGIN_EXPORT void VideoCapture_focus(VideoCapture* capture, int focusLevel);
+FFI_PLUGIN_EXPORT void VideoCapture_toggleAutofocus(VideoCapture* capture, int autofocusToggle);
 
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();

@@ -1,4 +1,5 @@
 import "dart:ffi";
+// import "dart:html";
 import "package:ffi/ffi.dart";
 
 import "exceptions.dart";
@@ -58,9 +59,40 @@ class Camera {
   /// Whether this camera is opened. If the device is not connected, this will be false.
   bool get isOpened => nativeLib.VideoCapture_isOpened(_camera) != 0;
 
+  /// The specific values for each camera control may be different for different cameras
+
+  /// For Camera controls: 
+  /// On Linux 
+  /// To see minimum and maximum values of each setting use
+  /// $ v4l2-ctl -d 0 -l
+
+  /// On Windows 
+  /// Use AMCap and check camera properties or use FFMPEG 
+  /// For FFMPEG I recommend using Chocolatey
+
+  /// $ ffmpeg -list_devices true f dshow -i dummy
+  /// ffmpeg -f dshow -list_options true -i video="Your video device"
+  /// *make sure there are no spaces between video="Your video device"
+
   /// Sets the resolution of the camera.
   void setResolution(int width, int height) =>
       nativeLib.VideoCapture_setResolution(_camera, width, height);
+  
+  /// Sets the zoom of the camera.
+  void zoom(int zoomLevel) =>
+    nativeLib.VideoCapture_zoom(_camera, zoomLevel);
+
+  /// Sets the pan of the camera.
+  void pan(int panLevel) =>
+    nativeLib.VideoCapture_pan(_camera, panLevel);
+  
+  /// Sets the tilt of the camera.
+  void tilt(int tiltLevel) =>
+    nativeLib.VideoCapture_tilt(_camera, tiltLevel);
+  
+  /// Sets the focus of the camera.
+  void focus(int focusLevel) =>
+    nativeLib.VideoCapture_focus(_camera, focusLevel);
 
   /// Reads a frame from the camera and shows it to the screen.
   ///
