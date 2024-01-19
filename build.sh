@@ -29,9 +29,8 @@ cd ..
 # Copy the .so files to the .dist directory
 mkdir -p dist
 cp build/opencv/lib/*.so dist  # the OpenCV libraries
-sudo cp build/opencv/lib/*.so /usr/lib  # the OpenCV libraries
 cp build/*.so dist  # the opencv_ffi library
-sudo cp build/*.so /usr/lib  # the opencv_ffi library
+sudo cp dist/*.so /usr/lib  # the opencv_ffi library
 
 cd $(dirname "$0")
 SCRIPT_DIR=$(pwd)
