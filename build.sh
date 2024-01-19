@@ -29,16 +29,13 @@ cd ..
 # Copy the .so files to the .dist directory
 mkdir -p dist
 cp build/opencv/lib/*.so dist  # the OpenCV libraries
+sudo cp build/opencv/lib/*.so /usr/lib  # the OpenCV libraries
 cp build/*.so dist  # the opencv_ffi library
+sudo cp build/*.so /usr/lib  # the opencv_ffi library
 
 cd $(dirname "$0")
 SCRIPT_DIR=$(pwd)
 INDENT="  "
 
 echo 
-echo Done! Your files are in the dist folder
-echo To let your device find them, run this command:
-echo "  echo \"export LD_LIBRARY_PATH=\\\$LD_LIBRARY_PATH:$SCRIPT_DIR/dist\" >> ~/.bashrc"
-echo You only need to run this once, but run this again if you move this folder
-echo This command does not affect any open terminal shells or SSH sessions.
-echo You\'ll need to open a new shell or SSH again for it to take effect.
+echo Done! Your files are in the dist folder, and have been copied to /usr/lib
