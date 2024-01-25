@@ -160,22 +160,23 @@ class OpenCVBindings {
       _Mat_createPtr.asFunction<ffi.Pointer<Mat> Function()>();
 
   ffi.Pointer<Mat> Mat_createFrom(
-    int rows, 
-    int cols, 
-    ffi.Pointer<ffi.Uint8> matrix,
+    int rows,
+    int cols,
+    ffi.Pointer<ffi.Uint8> data,
   ) {
     return _Mat_createFrom(
       rows,
       cols,
-      matrix,
+      data,
     );
   }
 
-  late final _Mat_createFromPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<Mat> Function(ffi.Int, ffi.Int, ffi.Pointer<ffi.Uint8>)>>(
-          'Mat_createFrom');
-  late final _Mat_createFrom =
-      _Mat_createFromPtr.asFunction<ffi.Pointer<Mat> Function(int, int, ffi.Pointer<ffi.Uint8>)>();
+  late final _Mat_createFromPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<Mat> Function(
+              ffi.Int, ffi.Int, ffi.Pointer<ffi.Uint8>)>>('Mat_createFrom');
+  late final _Mat_createFrom = _Mat_createFromPtr.asFunction<
+      ffi.Pointer<Mat> Function(int, int, ffi.Pointer<ffi.Uint8>)>();
 
   void Mat_destroy(
     ffi.Pointer<Mat> matrix,
