@@ -1,3 +1,7 @@
+## 1.2.0 - 2024-1-25
+### Added
+- Camera controls, see #18
+
 ## 1.1.0 - 2023-10-16
 ### Added
 - Camera controls, see #18
