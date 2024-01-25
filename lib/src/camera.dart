@@ -144,8 +144,10 @@ class Camera {
   }
 }
 
+final arena = Arena();
+
 OpenCVImage? encodeJpg(Pointer<Mat> image, {int quality = 75}) {
-  final bufferAddress = _arena<Pointer<Uint8>>(); // (1)
+  final bufferAddress = arena<Pointer<Uint8>>(); // (1)
   final size = nativeLib.encodeJpg(image, quality, bufferAddress); // (2)
   if (size == 0) throw ImageEncodeException();
   final Pointer<Uint8> buffer = bufferAddress.value; // (3)
