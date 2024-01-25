@@ -1,4 +1,5 @@
 import "dart:ffi";
+import "dart:typed_data";
 import "package:ffi/ffi.dart";
 
 import "exceptions.dart";
@@ -135,10 +136,32 @@ class Camera {
     // 3. The pointer now points to a valid pointer, which points to the actual buffer.
     final didRead = _read();
     if (!didRead) return null;
-    final bufferAddress = _arena<Pointer<Uint8>>(); // (1)
-    final size = nativeLib.encodeJpg(_image, quality, bufferAddress); // (2)
-    if (size == 0) throw ImageEncodeException();
-    final Pointer<Uint8> buffer = bufferAddress.value; // (3)
-    return OpenCVImage(pointer: buffer, length: size);
+    return encodeJpg(_image, quality: quality);
   }
 }
+
+/// An arena to allocate memory. 
+final arena = Arena();
+
+/// Encodes an OpenCV [image] as a JPG with the given [quality] (from 0-100). 
+OpenCVImage? encodeJpg(Pointer<Mat> image, {int quality = 100}) {
+  final bufferAddress = arena<Pointer<Uint8>>(); // (1)
+  final size = nativeLib.encodeJpg(image, quality, bufferAddress); // (2)
+  if (size == 0) throw ImageEncodeException();
+  final Pointer<Uint8> buffer = bufferAddress.value; // (3)
+  return OpenCVImage(pointer: buffer, length: size);
+}
+
+/// Converts an [image] with the given [width] and [height] into an OpenCV image.
+/// 
+/// The matrix must be disposed using [freeMatrix].
+Pointer<Mat> getMatrix(int height, int width, Uint8List image) {
+  final Pointer<Uint8> pointer = arena<Uint8>(image.length);
+  for (int i = 0; i < image.length; i++) {
+    pointer[i] = image[i];
+  }
+  return nativeLib.Mat_createFrom(height, width, pointer);
+}
+
+/// Frees memory associated with the given matrix and its underlying image.
+void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
