@@ -1,4 +1,5 @@
 import "dart:ffi";
+import "dart:typed_data";
 import "package:ffi/ffi.dart";
 
 import "exceptions.dart";
@@ -141,4 +142,20 @@ class Camera {
     final Pointer<Uint8> buffer = bufferAddress.value; // (3)
     return OpenCVImage(pointer: buffer, length: size);
   }
+}
+
+OpenCVImage? encodeJpg(Pointer<Mat> image, {int quality = 75}) {
+  final bufferAddress = _arena<Pointer<Uint8>>(); // (1)
+  final size = nativeLib.encodeJpg(image, quality, bufferAddress); // (2)
+  if (size == 0) throw ImageEncodeException();
+  final Pointer<Uint8> buffer = bufferAddress.value; // (3)
+  return OpenCVImage(pointer: buffer, length: size);
+}
+
+Pointer<Mat> getMatrix(int rows, int cols, Uint8List bytes) {
+  final Pointer<Uint8> pointer = arena<Uint8>(bytes.length);
+  for (int i = 0; i < bytes.length; i++) {
+    pointer[i] = bytes[i];
+  }
+  return nativeLib.Mat_createFrom(rows, cols, pointer);
 }
