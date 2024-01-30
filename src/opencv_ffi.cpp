@@ -50,6 +50,7 @@ FFI_PLUGIN_EXPORT Mat* Mat_createFrom(int rows, int cols, uint8_t* data) {
 }
 
 FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix) {
+	reinterpret_cast<cv::Mat*>(matrix)->~Mat();
 	delete reinterpret_cast<cv::Mat*>(matrix);
 }
 
