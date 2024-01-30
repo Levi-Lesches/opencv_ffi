@@ -1,5 +1,4 @@
 import "dart:ffi";
-import "dart:typed_data";
 import "package:ffi/ffi.dart";
 
 import "exceptions.dart";
@@ -152,16 +151,11 @@ OpenCVImage? encodeJpg(Pointer<Mat> image, {int quality = 100}) {
   return OpenCVImage(pointer: buffer, length: size);
 }
 
-/// Converts an [image] with the given [width] and [height] into an OpenCV image.
+/// Converts an image with the given [width] and [height] into an OpenCV matrix.
 /// 
 /// The matrix must be disposed using [freeMatrix].
-Pointer<Mat> getMatrix(int height, int width, Uint8List image) {
-  final Pointer<Uint8> pointer = arena<Uint8>(image.length);
-  for (int i = 0; i < image.length; i++) {
-    pointer[i] = image[i];
-  }
-  return nativeLib.Mat_createFrom(height, width, pointer);
-}
+Pointer<Mat> getMatrix(int height, int width, Pointer<Uint8> bytes) =>
+  nativeLib.Mat_createFrom(height, width, bytes);
 
 /// Frees memory associated with the given matrix and its underlying image.
 void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
