@@ -132,7 +132,7 @@ class OpenCVBindings {
   late final _VideoCapture_setProperty = _VideoCapture_setPropertyPtr
       .asFunction<void Function(ffi.Pointer<VideoCapture>, int, int)>();
 
-  int VideoCapture_getProperty(
+  double VideoCapture_getProperty(
     ffi.Pointer<VideoCapture> capture,
     int propertyID,
   ) {
@@ -144,10 +144,10 @@ class OpenCVBindings {
 
   late final _VideoCapture_getPropertyPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Int Function(
+          ffi.Double Function(
               ffi.Pointer<VideoCapture>, ffi.Int)>>('VideoCapture_getProperty');
   late final _VideoCapture_getProperty = _VideoCapture_getPropertyPtr
-      .asFunction<int Function(ffi.Pointer<VideoCapture>, int)>();
+      .asFunction<double Function(ffi.Pointer<VideoCapture>, int)>();
 
   /// Matrix code
   ffi.Pointer<Mat> Mat_create() {
@@ -193,8 +193,7 @@ class OpenCVBindings {
       _Mat_destroyPtr.asFunction<void Function(ffi.Pointer<Mat>)>();
 
   /// ArUco code
-  /// Cannot expose c++/opencv specific types
-  ffi.Pointer<MarkerData> detectMarkers(
+  ffi.Pointer<ArucoMarkers> detectMarkers(
     int dictionaryEnum,
     ffi.Pointer<Mat> image,
   ) {
@@ -206,14 +205,14 @@ class OpenCVBindings {
 
   late final _detectMarkersPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<MarkerData> Function(
+          ffi.Pointer<ArucoMarkers> Function(
               ffi.Int, ffi.Pointer<Mat>)>>('detectMarkers');
   late final _detectMarkers = _detectMarkersPtr
-      .asFunction<ffi.Pointer<MarkerData> Function(int, ffi.Pointer<Mat>)>();
+      .asFunction<ffi.Pointer<ArucoMarkers> Function(int, ffi.Pointer<Mat>)>();
 
   void drawDetectedMarkers(
     ffi.Pointer<Mat> image,
-    ffi.Pointer<MarkerData> data,
+    ffi.Pointer<ArucoMarker> data,
   ) {
     return _drawDetectedMarkers(
       image,
@@ -224,9 +223,23 @@ class OpenCVBindings {
   late final _drawDetectedMarkersPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(ffi.Pointer<Mat>,
-              ffi.Pointer<MarkerData>)>>('drawDetectedMarkers');
+              ffi.Pointer<ArucoMarker>)>>('drawDetectedMarkers');
   late final _drawDetectedMarkers = _drawDetectedMarkersPtr
-      .asFunction<void Function(ffi.Pointer<Mat>, ffi.Pointer<MarkerData>)>();
+      .asFunction<void Function(ffi.Pointer<Mat>, ffi.Pointer<ArucoMarker>)>();
+
+  void ArucoMarkers_free(
+    ffi.Pointer<ArucoMarkers> pointer,
+  ) {
+    return _ArucoMarkers_free(
+      pointer,
+    );
+  }
+
+  late final _ArucoMarkers_freePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ArucoMarkers>)>>(
+          'ArucoMarkers_free');
+  late final _ArucoMarkers_free = _ArucoMarkers_freePtr.asFunction<
+      void Function(ffi.Pointer<ArucoMarkers>)>();
 
   /// Misc code
   void imshow(
@@ -293,31 +306,38 @@ final class VideoCapture extends ffi.Opaque {}
 
 final class Mat extends ffi.Opaque {}
 
-final class MarkerData extends ffi.Struct {
-  @ffi.Int()
-  external int detectedBool;
-
-  external ffi.Pointer<ffi.Int> corners;
-
-  @ffi.Int()
-  external int id;
-}
-
-final class ArucoMarkers extends ffi.Opaque {}
-
 final class ArucoMarker extends ffi.Struct {
   @ffi.Int()
   external int id;
 
-  @ffi.Int()
-  external int upperLeftX;
+  @ffi.Float()
+  external double upperLeft_x;
+
+  @ffi.Float()
+  external double upperLeft_y;
+
+  @ffi.Float()
+  external double upperRight_x;
+
+  @ffi.Float()
+  external double upperRight_y;
+
+  @ffi.Float()
+  external double lowerRight_x;
+
+  @ffi.Float()
+  external double lowerRight_y;
+
+  @ffi.Float()
+  external double lowerLeft_x;
+
+  @ffi.Float()
+  external double lowerLeft_y;
+}
+
+final class ArucoMarkers extends ffi.Struct {
+  external ffi.Pointer<ArucoMarker> markers;
 
   @ffi.Int()
-  external int upperLeftY;
-
-  @ffi.Int()
-  external int bottomLeftX;
-
-  @ffi.Int()
-  external int bottomLeftY;
+  external int count;
 }

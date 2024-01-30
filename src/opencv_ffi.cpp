@@ -40,50 +40,50 @@ FFI_PLUGIN_EXPORT void VideoCapture_setProperty(VideoCapture* capture, int prope
 	pointer->set(propertyID, value);
 }
 
-FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int propertyID) {
+FFI_PLUGIN_EXPORT double VideoCapture_getProperty(VideoCapture* capture, int propertyID) {
 	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
 	return pointer->get(propertyID);
 }
 
 // ArUco code
-FFI_PLUGIN_EXPORT MarkerData* detectMarkers(int dictionaryEnum, Mat* image) {	
-	// setup the return struct
-	MarkerData *result;
-
+FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image) {	
+	// Initialize step
+	cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
 	cv::aruco::ArucoDetector detector;
 	detector.setDictionary(cv::aruco::getPredefinedDictionary(dictionaryEnum));
-	// frame from the camera
-	cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
 
-	// convert the input to the correct type
-	cv::InputArray inputArray = *cvImage;
-	std::vector< int > ids;
-	// arrary of an array of points
-    std::vector< std::vector< cv::Point2f > > corners, rejected;
+	// Forward to the OpenCV function
+	std::vector<int> ids;
+	std::vector<std::vector<cv::Point2f>> corners, rejected;
+	detector.detectMarkers(*cvImage, ids, corners, rejected);
 
-	detector.detectMarkers(inputArray, ids, corners, rejected);
+	size_t count = ids.size();
+	ArucoMarker* markers = new ArucoMarker[count];
+	for (int i = 0; i < count; i++) {
+		int id = ids[i];
+		std::vector<cv::Point2f> markerCorners = corners[i];
+		markers[i] = ArucoMarker { };
+		markers[i].id = ids[i];
+		markers[i].upperLeft_x = markerCorners[0].x;
+		markers[i].upperLeft_y = markerCorners[0].y;
+		markers[i].upperRight_x = markerCorners[1].x;
+		markers[i].upperRight_y = markerCorners[1].y;
+		markers[i].lowerRight_x = markerCorners[2].x;
+		markers[i].lowerRight_y = markerCorners[2].y;
+		markers[i].lowerLeft_x = markerCorners[3].x;
+		markers[i].lowerLeft_y = markerCorners[3].y;
+	}
 
-	result->id = ids[0];
-
-	// if we detect a marker
-	if (ids.size() > 0 ){
-		// set detectedBool to 'true (1)'
-		result->detectedBool = 1;
-		// convert vector to array ()
-		for (int i = 0; i < corners.size(); i++){
-			for (int j = 0; j < corners[i].size(); j++){
-				result->corners[i][j][0] = corners[i][j].x;
-				result->corners[i][j][1] = corners[i][j].y;
-			}
-		}
-
-	} else {
-		result->detectedBool = 0;
-	};
-
-	return *result;
+	auto result = new ArucoMarkers;
+	result->markers = markers;
+	result->count = (int) count;
+	return result;
 }
 
+FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer) {
+	delete[] pointer->markers;
+	delete pointer;
+}
 
 FFI_PLUGIN_EXPORT Mat* Mat_create() {
 	return reinterpret_cast<Mat*>(new cv::Mat());

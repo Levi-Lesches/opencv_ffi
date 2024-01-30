@@ -76,7 +76,7 @@ class Camera {
   /// Reads a property of the camera. 
   /// 
   /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
-  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID);
+  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID).toInt();
 
   /// Sets the resolution of the camera.
   void setResolution(int width, int height) {

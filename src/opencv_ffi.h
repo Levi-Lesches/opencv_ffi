@@ -15,25 +15,21 @@ struct Mat;
 typedef struct Mat Mat;
 
 typedef struct {
-    int detectedBool;
-    int *corners;
-    int id;   
-}MarkerData;
-
-typedef struct {
-    
-} ArucoMarkers;
-
-typedef struct {
     int id;
-    int upperLeftX;
-    int upperLeftY;
-    int bottomLeftX;
-    int bottomLeftY; 
+    float upperLeft_x;
+    float upperLeft_y;
+    float upperRight_x;
+    float upperRight_y;
+    float lowerRight_x;
+    float lowerRight_y; 
+    float lowerLeft_x;
+    float lowerLeft_y;
 } ArucoMarker;
 
-
-
+typedef struct {
+    ArucoMarker* markers;
+    int count;
+} ArucoMarkers;
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +43,7 @@ FFI_PLUGIN_EXPORT void VideoCapture_release(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_isOpened(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image);
 FFI_PLUGIN_EXPORT void VideoCapture_setProperty(VideoCapture* capture, int propertyID, int value);
-FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int propertyID);
+FFI_PLUGIN_EXPORT double VideoCapture_getProperty(VideoCapture* capture, int propertyID);
 
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();
@@ -55,10 +51,9 @@ FFI_PLUGIN_EXPORT Mat* Mat_createFrom(int rows, int cols, uint8_t* data);
 FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix);
 
 // ArUco code
-// Cannot expose c++/opencv specific types
-
-FFI_PLUGIN_EXPORT MarkerData* detectMarkers(int dictionaryEnum, Mat* image);
-FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, MarkerData* data);
+FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image);
+FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarker* data);
+FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer);
 
 // Misc code
 FFI_PLUGIN_EXPORT void imshow(Mat* image);

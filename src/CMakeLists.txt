@@ -12,7 +12,7 @@ SET(BUILD_TESTS OFF CACHE BOOL "Some option" FORCE)
 SET(BUILD_PERF_TESTS OFF CACHE BOOL "Some option" FORCE)
 SET(BUILD_EXAMPLES OFF CACHE BOOL "Some option" FORCE)
 SET(BUILD_opencv_apps OFF CACHE BOOL "Some option" FORCE)
-SET(BUILD_LIST "core,videoio,highgui" CACHE STRING "Some option" FORCE)
+SET(BUILD_LIST "core,videoio,highgui,objdetect" CACHE STRING "Some option" FORCE)
 SET(BUILD_JAVA OFF CACHE BOOL "Some option" FORCE)
 SET(BUILD_opencv_python2 OFF CACHE BOOL "Some option" FORCE)
 SET(BUILD_opencv_python3 OFF CACHE BOOL "Some option" FORCE)
@@ -68,7 +68,7 @@ include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/vi
 include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/core/include")
 include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/highgui/include")
 include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/imgcodecs/include")
-include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/core/include")
+include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/objdetect/include")
 include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_BINARY_DIR}/opencv/include")
 include_directories(BEFORE SYSTEM "${CMAKE_CURRENT_BINARY_DIR}/")
 
@@ -85,4 +85,4 @@ set_target_properties(opencv_ffi PROPERTIES
 
 # Compile opencv_ffi
 target_compile_definitions(opencv_ffi PUBLIC DART_SHARED_LIB)
-target_link_libraries( opencv_ffi "opencv_videoio" "opencv_highgui" "opencv_core")
+target_link_libraries( opencv_ffi "opencv_videoio" "opencv_highgui" "opencv_core" "opencv_objdetect")
