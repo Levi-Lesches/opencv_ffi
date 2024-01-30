@@ -2,8 +2,12 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/utils/logger.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/objdetect/aruco_detector.hpp>
 
 #include "opencv_ffi.h"
+#include <vector>
+
 
 FFI_PLUGIN_EXPORT VideoCapture* VideoCapture_getByIndex(int index) {
 	return reinterpret_cast<VideoCapture*>(new cv::VideoCapture(index, 0));
@@ -40,6 +44,46 @@ FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int proper
 	cv::VideoCapture* pointer = reinterpret_cast<cv::VideoCapture*>(capture);
 	return pointer->get(propertyID);
 }
+
+// ArUco code
+FFI_PLUGIN_EXPORT MarkerData* detectMarkers(int dictionaryEnum, Mat* image) {	
+	// setup the return struct
+	MarkerData *result;
+
+	cv::aruco::ArucoDetector detector;
+	detector.setDictionary(cv::aruco::getPredefinedDictionary(dictionaryEnum));
+	// frame from the camera
+	cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
+
+	// convert the input to the correct type
+	cv::InputArray inputArray = *cvImage;
+	std::vector< int > ids;
+	// arrary of an array of points
+    std::vector< std::vector< cv::Point2f > > corners, rejected;
+
+	detector.detectMarkers(inputArray, ids, corners, rejected);
+
+	result->id = ids[0];
+
+	// if we detect a marker
+	if (ids.size() > 0 ){
+		// set detectedBool to 'true (1)'
+		result->detectedBool = 1;
+		// convert vector to array ()
+		for (int i = 0; i < corners.size(); i++){
+			for (int j = 0; j < corners[i].size(); j++){
+				result->corners[i][j][0] = corners[i][j].x;
+				result->corners[i][j][1] = corners[i][j].y;
+			}
+		}
+
+	} else {
+		result->detectedBool = 0;
+	};
+
+	return *result;
+}
+
 
 FFI_PLUGIN_EXPORT Mat* Mat_create() {
 	return reinterpret_cast<Mat*>(new cv::Mat());

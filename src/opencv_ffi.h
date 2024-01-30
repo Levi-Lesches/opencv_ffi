@@ -14,6 +14,27 @@ typedef struct VideoCapture VideoCapture;
 struct Mat;
 typedef struct Mat Mat;
 
+typedef struct {
+    int detectedBool;
+    int *corners;
+    int id;   
+}MarkerData;
+
+typedef struct {
+    
+} ArucoMarkers;
+
+typedef struct {
+    int id;
+    int upperLeftX;
+    int upperLeftY;
+    int bottomLeftX;
+    int bottomLeftY; 
+} ArucoMarker;
+
+
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,6 +52,12 @@ FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int proper
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();
 FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix);
+
+// ArUco code
+// Cannot expose c++/opencv specific types
+
+FFI_PLUGIN_EXPORT MarkerData* detectMarkers(int dictionaryEnum, Mat* image);
+FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, MarkerData* data);
 
 // Misc code
 FFI_PLUGIN_EXPORT void imshow(Mat* image);
