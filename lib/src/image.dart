@@ -11,7 +11,7 @@ import "ffi.dart";
 /// When you are done with this image, be sure to call [dispose].
 class OpenCVImage {
   /// The pointer to the native buffer containing this image.
-  final Pointer<Uint8> _pointer;
+  final Pointer<Uint8> pointer;
 
   /// The data stored in the native buffer, in Dart format.
   ///
@@ -19,10 +19,9 @@ class OpenCVImage {
   final Uint8List data;
 
   /// Holds a pointer to an image encoded by OpenCV.
-  OpenCVImage({required Pointer<Uint8> pointer, required int length})
-      : _pointer = pointer,
-        data = pointer.asTypedList(length);
+  OpenCVImage({required this.pointer, required int length}) :
+    data = pointer.asTypedList(length);
 
   /// Frees the resources associated with this image.
-  void dispose() => nativeLib.freeImage(_pointer);
+  void dispose() => nativeLib.freeImage(pointer);
 }

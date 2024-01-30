@@ -16,13 +16,13 @@ import "image.dart";
 /// - Show the current frame on-screen using [showFrame]
 /// - Get a JPG using [getJpg]
 /// - Be sure to call [dispose] to release the camera.
-///
+/// 
 /// This class also lets you set value for specific settings that may or may not be supported by
 /// your device. To find which values are supported, run the following command (Linux only):
 /// ```bash
 /// v4l2-ctl -d 0 -l
 /// ```
-///
+/// 
 /// On Windows, you can use FFMPEG to check the camera's supported options. This class supports
 /// resolution, zoom, focus, autofocus, pan, tilt, and roll. Additional options can be set using
 /// [setProperty] and [getProperty].
@@ -67,17 +67,16 @@ class Camera {
   /// Whether this camera is opened. If the device is not connected, this will be false.
   bool get isOpened => nativeLib.VideoCapture_isOpened(_camera) != 0;
 
-  /// Sets a property of the camera.
-  ///
+  /// Sets a property of the camera. 
+  /// 
   /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
-  void setProperty(int propertyID, int value) =>
-      nativeLib.VideoCapture_setProperty(_camera, propertyID, value);
-
-  /// Reads a property of the camera.
-  ///
+  void setProperty(int propertyID, int value) => 
+    nativeLib.VideoCapture_setProperty(_camera, propertyID, value);
+  
+  /// Reads a property of the camera. 
+  /// 
   /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
-  int getProperty(int propertyID) =>
-      nativeLib.VideoCapture_getProperty(_camera, propertyID);
+  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID);
 
   /// Sets the resolution of the camera.
   void setResolution(int width, int height) {
@@ -109,7 +108,7 @@ class Camera {
   int get roll => getProperty(35);
   set roll(int value) => setProperty(35, value);
 
-  // Determines whether autofocus is on or off
+  /// Determines whether autofocus is on or off
   int get autofocus => getProperty(39);
   set autofocus(int value) => setProperty(39, value);
 
@@ -140,10 +139,27 @@ class Camera {
     // 3. The pointer now points to a valid pointer, which points to the actual buffer.
     final didRead = _read();
     if (!didRead) return null;
-    final bufferAddress = _arena<Pointer<Uint8>>(); // (1)
-    final size = nativeLib.encodeJpg(_image, quality, bufferAddress); // (2)
-    if (size == 0) throw ImageEncodeException();
-    final Pointer<Uint8> buffer = bufferAddress.value; // (3)
-    return OpenCVImage(pointer: buffer, length: size);
+    return encodeJpg(_image, quality: quality);
   }
 }
+
+/// An arena to allocate memory. 
+final arena = Arena();
+
+/// Encodes an OpenCV [image] as a JPG with the given [quality] (from 0-100). 
+OpenCVImage? encodeJpg(Pointer<Mat> image, {int quality = 100}) {
+  final bufferAddress = arena<Pointer<Uint8>>(); // (1)
+  final size = nativeLib.encodeJpg(image, quality, bufferAddress); // (2)
+  if (size == 0) throw ImageEncodeException();
+  final Pointer<Uint8> buffer = bufferAddress.value; // (3)
+  return OpenCVImage(pointer: buffer, length: size);
+}
+
+/// Converts an image with the given [width] and [height] into an OpenCV matrix.
+/// 
+/// The matrix must be disposed using [freeMatrix].
+Pointer<Mat> getMatrix(int height, int width, Pointer<Uint8> bytes) =>
+  nativeLib.Mat_createFrom(height, width, bytes);
+
+/// Frees memory associated with the given matrix and its underlying image.
+void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
