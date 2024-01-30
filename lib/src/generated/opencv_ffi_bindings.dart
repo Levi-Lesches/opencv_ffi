@@ -192,6 +192,42 @@ class OpenCVBindings {
   late final _Mat_destroy =
       _Mat_destroyPtr.asFunction<void Function(ffi.Pointer<Mat>)>();
 
+  /// ArUco code
+  /// Cannot expose c++/opencv specific types
+  ffi.Pointer<MarkerData> detectMarkers(
+    int dictionaryEnum,
+    ffi.Pointer<Mat> image,
+  ) {
+    return _detectMarkers(
+      dictionaryEnum,
+      image,
+    );
+  }
+
+  late final _detectMarkersPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<MarkerData> Function(
+              ffi.Int, ffi.Pointer<Mat>)>>('detectMarkers');
+  late final _detectMarkers = _detectMarkersPtr
+      .asFunction<ffi.Pointer<MarkerData> Function(int, ffi.Pointer<Mat>)>();
+
+  void drawDetectedMarkers(
+    ffi.Pointer<Mat> image,
+    ffi.Pointer<MarkerData> data,
+  ) {
+    return _drawDetectedMarkers(
+      image,
+      data,
+    );
+  }
+
+  late final _drawDetectedMarkersPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<Mat>,
+              ffi.Pointer<MarkerData>)>>('drawDetectedMarkers');
+  late final _drawDetectedMarkers = _drawDetectedMarkersPtr
+      .asFunction<void Function(ffi.Pointer<Mat>, ffi.Pointer<MarkerData>)>();
+
   /// Misc code
   void imshow(
     ffi.Pointer<Mat> image,
@@ -256,3 +292,32 @@ class OpenCVBindings {
 final class VideoCapture extends ffi.Opaque {}
 
 final class Mat extends ffi.Opaque {}
+
+final class MarkerData extends ffi.Struct {
+  @ffi.Int()
+  external int detectedBool;
+
+  external ffi.Pointer<ffi.Int> corners;
+
+  @ffi.Int()
+  external int id;
+}
+
+final class ArucoMarkers extends ffi.Opaque {}
+
+final class ArucoMarker extends ffi.Struct {
+  @ffi.Int()
+  external int id;
+
+  @ffi.Int()
+  external int upperLeftX;
+
+  @ffi.Int()
+  external int upperLeftY;
+
+  @ffi.Int()
+  external int bottomLeftX;
+
+  @ffi.Int()
+  external int bottomLeftY;
+}
