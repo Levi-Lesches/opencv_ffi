@@ -26,7 +26,7 @@ analyzer:
     strict-raw-types: true
 
   exclude: 
-    - lib/generated/**.dart
+    # - lib/generated/**.dart
     - test/**.dart
 
 linter:

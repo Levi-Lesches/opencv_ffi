@@ -30,6 +30,7 @@ FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int proper
 
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();
+FFI_PLUGIN_EXPORT Mat* Mat_createFrom(int rows, int cols, uint8_t* data);
 FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix);
 
 // Misc code

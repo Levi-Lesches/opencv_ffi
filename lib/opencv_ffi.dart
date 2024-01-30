@@ -6,3 +6,5 @@ library;
 export "src/camera.dart";
 export "src/exceptions.dart";
 export "src/image.dart";
+
+export "src/ffi.dart";
