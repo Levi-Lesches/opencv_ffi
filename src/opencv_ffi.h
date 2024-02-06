@@ -52,7 +52,7 @@ FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix);
 
 // ArUco code
 FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image);
-FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarker* data);
+FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarkers* data);
 FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer);
 
 // Misc code

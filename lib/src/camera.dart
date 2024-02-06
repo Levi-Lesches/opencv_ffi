@@ -163,3 +163,8 @@ Pointer<Mat> getMatrix(int height, int width, Pointer<Uint8> bytes) =>
 
 /// Frees memory associated with the given matrix and its underlying image.
 void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
+
+// Pointer<detectArucoMarkers> (Pointer<Mat> image) {
+//   final markers = nativeLib.detectArucoMarkers(image);
+//   return ArucoMarkers(markers);
+// }

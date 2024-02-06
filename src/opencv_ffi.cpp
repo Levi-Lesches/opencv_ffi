@@ -80,6 +80,20 @@ FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image) {
 	return result;
 }
 
+FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarkers* data) {
+	std::vector<std::vector<cv::Point2f>> corners, rejected;
+	for (int i = 0; i < data->count; i++) {
+		std::vector<cv::Point2f> markerCorners;
+		markerCorners.push_back(cv::Point2f(data->markers[i].upperLeft_x, data->markers[i].upperLeft_y));
+		markerCorners.push_back(cv::Point2f(data->markers[i].upperRight_x, data->markers[i].upperRight_y));
+		markerCorners.push_back(cv::Point2f(data->markers[i].lowerRight_x, data->markers[i].lowerRight_y));
+		markerCorners.push_back(cv::Point2f(data->markers[i].lowerLeft_x, data->markers[i].lowerLeft_y));
+		corners.push_back(markerCorners);
+		cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
+		cv::aruco::drawDetectedMarkers(*cvImage,corners, data->markers[i].id);
+	}
+}
+
 FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer) {
 	delete[] pointer->markers;
 	delete pointer;
