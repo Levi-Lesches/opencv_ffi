@@ -55,6 +55,23 @@ class Camera {
     return result != 0;
   }
 
+  /// Gets a raw OpenCV frame from this camera.
+  Pointer<Mat> getFrame() {
+    // print("Getting frame: ");
+    // print("  Allocating space");
+    final pointer = nativeLib.Mat_create();
+    // print("  Got pointer: $pointer");
+    final result = nativeLib.VideoCapture_read(_camera, pointer);
+    if (result == 0) {
+      // print("  Got no frame");
+      nativeLib.Mat_destroy(pointer);
+      return nullptr;
+    } else {
+      // print("  Got frame!");
+      return pointer;
+    }
+  }
+
   /// Frees the native resources used by this camera.
   void dispose() {
     nativeLib
@@ -164,7 +181,24 @@ Pointer<Mat> getMatrix(int height, int width, Pointer<Uint8> bytes) =>
 /// Frees memory associated with the given matrix and its underlying image.
 void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
 
-// Pointer<detectArucoMarkers> (Pointer<Mat> image) {
-//   final markers = nativeLib.detectArucoMarkers(image);
-//   return ArucoMarkers(markers);
-// }
+/// Detects ArUco markers according to the given ArUco dictionary. 
+/// 
+/// See https://docs.opencv.org/4.x/d1/d21/aruco__dictionary_8hpp.html for a list of ArUco dictionaries
+Pointer<ArucoMarkers> detectArucoMarkers(Pointer<Mat> image, {required int dictionary}) => 
+  nativeLib.detectMarkers(0, image);
+
+/// Draws rectangles around any identified markers in the image.
+void drawMarkers(Pointer<Mat> image, Pointer<ArucoMarkers> markers) => 
+  nativeLib.drawDetectedMarkers(image, markers);
+
+/// Extension methods on a pointer to [ArucoMarkers] structs.
+extension ArucoMarkersUtils on Pointer<ArucoMarkers> {
+  /// Releases the memory associated with these markers.
+  void dispose() => nativeLib.ArucoMarkers_free(this);
+}
+
+/// Extension methods on OpenCV Matrix objects.
+extension MatUtils on Pointer<Mat> {
+  /// Releases the memory associated with this frame.
+  void dispose() => nativeLib.Mat_destroy(this);
+}

@@ -49,13 +49,14 @@ FFI_PLUGIN_EXPORT double VideoCapture_getProperty(VideoCapture* capture, int pro
 FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image) {	
 	// Initialize step
 	cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
-	cv::aruco::ArucoDetector detector;
-	detector.setDictionary(cv::aruco::getPredefinedDictionary(dictionaryEnum));
+	cv::aruco::Dictionary dictionary = cv::aruco::getPredefinedDictionary(dictionaryEnum);
+	cv::aruco::DetectorParameters params = cv::aruco::DetectorParameters();
+	cv::aruco::ArucoDetector detector(dictionary, params);
 
 	// Forward to the OpenCV function
 	std::vector<int> ids;
 	std::vector<std::vector<cv::Point2f>> corners, rejected;
-	detector.detectMarkers(*cvImage, ids, corners, rejected);
+	detector.detectMarkers(*cvImage, corners, ids, rejected);
 
 	size_t count = ids.size();
 	ArucoMarker* markers = new ArucoMarker[count];
@@ -82,16 +83,18 @@ FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image) {
 
 FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarkers* data) {
 	std::vector<std::vector<cv::Point2f>> corners, rejected;
+	std::vector<int> ids;
 	for (int i = 0; i < data->count; i++) {
+		ids.push_back(data->markers[i].id);
 		std::vector<cv::Point2f> markerCorners;
 		markerCorners.push_back(cv::Point2f(data->markers[i].upperLeft_x, data->markers[i].upperLeft_y));
 		markerCorners.push_back(cv::Point2f(data->markers[i].upperRight_x, data->markers[i].upperRight_y));
 		markerCorners.push_back(cv::Point2f(data->markers[i].lowerRight_x, data->markers[i].lowerRight_y));
 		markerCorners.push_back(cv::Point2f(data->markers[i].lowerLeft_x, data->markers[i].lowerLeft_y));
 		corners.push_back(markerCorners);
-		cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
-		cv::aruco::drawDetectedMarkers(*cvImage,corners, data->markers[i].id);
 	}
+	cv::Mat* cvImage = reinterpret_cast<cv::Mat*>(image);
+	cv::aruco::drawDetectedMarkers(*cvImage, corners, ids);
 }
 
 FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer) {

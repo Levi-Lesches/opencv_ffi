@@ -212,7 +212,7 @@ class OpenCVBindings {
 
   void drawDetectedMarkers(
     ffi.Pointer<Mat> image,
-    ffi.Pointer<ArucoMarker> data,
+    ffi.Pointer<ArucoMarkers> data,
   ) {
     return _drawDetectedMarkers(
       image,
@@ -223,9 +223,9 @@ class OpenCVBindings {
   late final _drawDetectedMarkersPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(ffi.Pointer<Mat>,
-              ffi.Pointer<ArucoMarker>)>>('drawDetectedMarkers');
+              ffi.Pointer<ArucoMarkers>)>>('drawDetectedMarkers');
   late final _drawDetectedMarkers = _drawDetectedMarkersPtr
-      .asFunction<void Function(ffi.Pointer<Mat>, ffi.Pointer<ArucoMarker>)>();
+      .asFunction<void Function(ffi.Pointer<Mat>, ffi.Pointer<ArucoMarkers>)>();
 
   void ArucoMarkers_free(
     ffi.Pointer<ArucoMarkers> pointer,
