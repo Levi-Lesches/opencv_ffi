@@ -14,6 +14,23 @@ typedef struct VideoCapture VideoCapture;
 struct Mat;
 typedef struct Mat Mat;
 
+typedef struct {
+    int id;
+    float upperLeft_x;
+    float upperLeft_y;
+    float upperRight_x;
+    float upperRight_y;
+    float lowerRight_x;
+    float lowerRight_y; 
+    float lowerLeft_x;
+    float lowerLeft_y;
+} ArucoMarker;
+
+typedef struct {
+    ArucoMarker* markers;
+    int count;
+} ArucoMarkers;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,12 +43,17 @@ FFI_PLUGIN_EXPORT void VideoCapture_release(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_isOpened(VideoCapture* capture);
 FFI_PLUGIN_EXPORT int VideoCapture_read(VideoCapture* capture, Mat* image);
 FFI_PLUGIN_EXPORT void VideoCapture_setProperty(VideoCapture* capture, int propertyID, int value);
-FFI_PLUGIN_EXPORT int VideoCapture_getProperty(VideoCapture* capture, int propertyID);
+FFI_PLUGIN_EXPORT double VideoCapture_getProperty(VideoCapture* capture, int propertyID);
 
 // Matrix code
 FFI_PLUGIN_EXPORT Mat* Mat_create();
 FFI_PLUGIN_EXPORT Mat* Mat_createFrom(int rows, int cols, uint8_t* data);
 FFI_PLUGIN_EXPORT void Mat_destroy(Mat* matrix);
+
+// ArUco code
+FFI_PLUGIN_EXPORT ArucoMarkers* detectMarkers(int dictionaryEnum, Mat* image);
+FFI_PLUGIN_EXPORT void drawDetectedMarkers(Mat* image, ArucoMarkers* data);
+FFI_PLUGIN_EXPORT void ArucoMarkers_free(ArucoMarkers* pointer);
 
 // Misc code
 FFI_PLUGIN_EXPORT void imshow(Mat* image);

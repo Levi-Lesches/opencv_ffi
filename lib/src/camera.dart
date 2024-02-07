@@ -55,6 +55,23 @@ class Camera {
     return result != 0;
   }
 
+  /// Gets a raw OpenCV frame from this camera.
+  Pointer<Mat> getFrame() {
+    // print("Getting frame: ");
+    // print("  Allocating space");
+    final pointer = nativeLib.Mat_create();
+    // print("  Got pointer: $pointer");
+    final result = nativeLib.VideoCapture_read(_camera, pointer);
+    if (result == 0) {
+      // print("  Got no frame");
+      nativeLib.Mat_destroy(pointer);
+      return nullptr;
+    } else {
+      // print("  Got frame!");
+      return pointer;
+    }
+  }
+
   /// Frees the native resources used by this camera.
   void dispose() {
     nativeLib
@@ -76,22 +93,22 @@ class Camera {
   /// Reads a property of the camera. 
   /// 
   /// See https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
-  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID);
+  int getProperty(int propertyID) => nativeLib.VideoCapture_getProperty(_camera, propertyID).toInt();
 
   /// Sets the resolution of the camera.
   void setResolution(int width, int height) {
-    setProperty(3, width);  // cv::CAP_PROP_FRAME_WIDTH = 3,
+    setProperty(3, width); // cv::CAP_PROP_FRAME_WIDTH = 3,
     setProperty(4, height); // cv::CAP_PROP_FRAME_HEIGHT = 4,
   }
 
   /// The native framerate of the camera. This is different than reading frames at an interval.
   int get fps => getProperty(5);
   set fps(int value) => setProperty(5, value);
-  
-  /// The zoom level of the camera. 
+
+  /// The zoom level of the camera.
   int get zoom => getProperty(27);
   set zoom(int value) => setProperty(27, value);
-  
+
   /// The focus of the camera.
   int get focus => getProperty(28);
   set focus(int value) => setProperty(28, value);
@@ -99,7 +116,7 @@ class Camera {
   /// Pans the camera when zoomed in.
   int get pan => getProperty(33);
   set pan(int value) => setProperty(33, value);
-  
+
   /// Tilts the camera vertically when zoomed in.
   int get tilt => getProperty(34);
   set tilt(int value) => setProperty(34, value);
@@ -107,7 +124,11 @@ class Camera {
   /// Rolls the camera when zoomed in.
   int get roll => getProperty(35);
   set roll(int value) => setProperty(35, value);
-  
+
+  /// Determines whether autofocus is on or off
+  int get autofocus => getProperty(39);
+  set autofocus(int value) => setProperty(39, value);
+
   /// Reads a frame from the camera and shows it to the screen.
   ///
   /// The resulting window is controlled by OpenCV, so only use this for testing.
@@ -159,3 +180,25 @@ Pointer<Mat> getMatrix(int height, int width, Pointer<Uint8> bytes) =>
 
 /// Frees memory associated with the given matrix and its underlying image.
 void freeMatrix(Pointer<Mat> pointer) => nativeLib.Mat_destroy(pointer);
+
+/// Detects ArUco markers according to the given ArUco dictionary. 
+/// 
+/// See https://docs.opencv.org/4.x/d1/d21/aruco__dictionary_8hpp.html for a list of ArUco dictionaries
+Pointer<ArucoMarkers> detectArucoMarkers(Pointer<Mat> image, {required int dictionary}) => 
+  nativeLib.detectMarkers(0, image);
+
+/// Draws rectangles around any identified markers in the image.
+void drawMarkers(Pointer<Mat> image, Pointer<ArucoMarkers> markers) => 
+  nativeLib.drawDetectedMarkers(image, markers);
+
+/// Extension methods on a pointer to [ArucoMarkers] structs.
+extension ArucoMarkersUtils on Pointer<ArucoMarkers> {
+  /// Releases the memory associated with these markers.
+  void dispose() => nativeLib.ArucoMarkers_free(this);
+}
+
+/// Extension methods on OpenCV Matrix objects.
+extension MatUtils on Pointer<Mat> {
+  /// Releases the memory associated with this frame.
+  void dispose() => nativeLib.Mat_destroy(this);
+}

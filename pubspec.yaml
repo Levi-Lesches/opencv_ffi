@@ -22,3 +22,27 @@ topics:
   - video
   - image
   - camera
+
+ffigen:
+  # Run with `dart run ffigen --config ffigen.yaml -v severe`.
+  name: OpenCVBindings
+  description: |
+    Bindings for `src/opencv_ffi.h`.
+
+    Regenerate bindings with `dart run ffigen --config ffigen.yaml -v severe`.
+  output: "lib/src/generated/opencv_ffi_bindings.dart"
+  headers:
+    entry-points:
+      - 'src/opencv_ffi.h'
+    include-directives:
+      - 'src/opencv_ffi.h'
+  comments:
+    style: any
+    length: full
+
+  type-map:
+    native-types:
+      'char':  # Converts `char` to `Utf8` instead of `Char`
+        'lib': 'pkg_ffi'
+        'c-type': 'Utf8'
+        'dart-type': 'Utf8'
