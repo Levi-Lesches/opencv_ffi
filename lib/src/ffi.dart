@@ -9,7 +9,7 @@ String _getPath() {
   if (Platform.isWindows) {
     return "opencv_ffi.dll";
   } else if (Platform.isMacOS) {
-    return "opencv_ffi.dylib";
+    return "libopencv_ffi.dylib";
   } else if (Platform.isLinux) {
     return "libopencv_ffi.so";
   } else {
