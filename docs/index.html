@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="opencv_ffi API docs, for the Dart programming language.">
+  <title>opencv_ffi - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://opencv.org">opencv_ffi package</a></li>
+  </ol>
+  <div class="self-name">opencv_ffi</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <div class="markdown-alert markdown-alert-important">
+<p class="markdown-alert-title">Important</p>
+<p>This package is discontinued in favor of <a href="https://pub.dev/packages/opencv_dart"><code>package:opencv_dart</code></a> as it is similar but more feature complete and under active maintenance.</p>
+</div>
+<h1 id="opencv-ffi">OpenCV FFI</h1>
+<p>This package contains an ffi-based implementation of OpenCV in Dart. That is, OpenCV itself is bundled in this repository (as a submodule, in <code>src/opencv</code>), and must be built first for this package to work.</p>
+<h2 id="compiling-opencv">Compiling OpenCV</h2>
+<p>This plugin dynamically loads shared/dynamic libraries to run, namely, OpenCV. For now, you must compile OpenCV yourself using the build scripts provided here. They have been hand-tuned to build only what's needed by this plugin to reduce build time from a few hours to a few minutes. This means that even if you include this plugin in your <code>pubspec.yaml</code>, you still need to manually clone this repository to build OpenCV and produce the <code>.so</code> or <code>.dll</code> files.</p>
+<p>In the future, this process will use the upcoming <a href="https://github.com/dart-lang/sdk/issues/50565">Native Assets feature</a>, which will allow <code>dart pub get</code> to do this automatically.</p>
+<h3 id="windows">Windows</h3>
+<ol>
+<li>Install CMake, or Visual Studio with CMake. You'll likely already have done this since it's required for Flutter for Windows.</li>
+<li>Add CMake to your <code>PATH</code> and restart your terminal/IDE. You can also use the <code>Developer Command Prompt for Visual Studio</code>.</li>
+<li>Verify CMake is available by running <code>cmake --version</code></li>
+<li>Run <code>build.bat</code> to compile OpenCV and generate the <code>dist</code> folder. This should take up to 5 minutes depending on your PC</li>
+<li>Add the <code>dist</code> folder to your <code>PATH</code>. Restart your terminal/IDE and run your project as normal.</li>
+</ol>
+<h3 id="linux">Linux</h3>
+<p>Run <code>build.sh</code>. This will compile OpenCV and can take up to 10 minutes depending on your hardware. The script will output a command to add the <code>dist</code> folder to your <code>LD_LIBRARY_PATH</code>. You only need to run this command once, even if you modify and rebuild OpenCV, but you must run it again if you <em>move</em> the <code>dist</code> folder.</p>
+<h2 id="usage">Usage</h2>
+<pre class="language-dart"><code class="language-dart">import "package:opencv_ffi/opencv_ffi.dart";
+
+void main() async {
+  final camera = Camera(0);
+  try {
+    while (true) {
+      camera.showFrame();
+    }
+  } finally {
+    camera.dispose();    
+  }
+}
+</code></pre>
+<p>See the <a href="https://levi-lesches.github.io/opencv_ffi/opencv_ffi/opencv_ffi-library.html">docs</a> for more usage.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="opencv_ffi">
+  <span class="name"><a href="opencv_ffi/opencv_ffi-library.html">opencv_ffi</a></span> 
+
+</dt>
+<dd>Support for doing something awesome.
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://opencv.org">opencv_ffi package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">opencv_ffi</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="opencv_ffi/opencv_ffi-library.html">opencv_ffi</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    opencv_ffi
+      2.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
