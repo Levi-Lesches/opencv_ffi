@@ -1,3 +1,6 @@
+> [!important]
+> This package is discontinued in favor of [`package:opencv_dart`](https://pub.dev/packages/opencv_dart) as it is similar but more feature complete and under active maintenance. 
+
 # OpenCV FFI
 
 This package contains an ffi-based implementation of OpenCV in Dart. That is, OpenCV itself is bundled in this repository (as a submodule, in `src/opencv`), and must be built first for this package to work.
