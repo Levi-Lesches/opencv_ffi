@@ -1,3 +1,6 @@
+## 2.0.0 - 2024-11-14
+- Discontinue the package in favor of package:opencv_dart
+
 ## 1.2.0 - 2024-1-25
 ### Added
 - Camera controls, see #18

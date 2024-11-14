@@ -1,6 +1,6 @@
 name: opencv_ffi
 description: An FFI implementation of the C++ OpenCV library in Dart, with video I/O, image encodings and processing, and some GUI elements.
-version: 1.2.0
+version: 2.0.0
 repository: https://github.com/Levi-Lesches/opencv_ffi
 homepage: https://opencv.org
 
@@ -16,7 +16,7 @@ dev_dependencies:
   test: ^1.21.0
   very_good_analysis: ^5.0.0+1
 
-topics: 
+topics:
   - ffi
   - opencv
   - video
